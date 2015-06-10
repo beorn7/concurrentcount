@@ -77,6 +77,38 @@ func (c *AtomicIntCounter) Add(delta float64) {
 	atomic.AddInt64((*int64)(c), int64(delta))
 }
 
+// NaiveCounter does not apply any locking.
+type NaiveCounter float64
+
+func (c *NaiveCounter) Get() float64 {
+	return float64(*c)
+}
+
+func (c *NaiveCounter) Inc() {
+	(*c)++
+}
+
+// Add ignores the non-integer part of delta.
+func (c *NaiveCounter) Add(delta float64) {
+	*c += NaiveCounter(delta)
+}
+
+// NaiveIntCounter uses an int64 internally and does not apply any locking.
+type NaiveIntCounter int64
+
+func (c *NaiveIntCounter) Get() float64 {
+	return float64(*c)
+}
+
+func (c *NaiveIntCounter) Inc() {
+	(*c)++
+}
+
+// Add ignores the non-integer part of delta.
+func (c *NaiveIntCounter) Add(delta float64) {
+	*c += NaiveIntCounter(delta)
+}
+
 // AtomicCounter uses an uint64 internally and still deals with real
 // float64's. However, it has to use CompareAndSwapUint64 for that, which might
 // fail during contention. It might need to try several times, spinning...

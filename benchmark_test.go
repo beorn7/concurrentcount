@@ -6,9 +6,6 @@ import (
 )
 
 const (
-	// Number of goroutines using the counter.
-	concurrency = 8
-
 	// How many more writes to the counter than reads. In typical telemetry
 	// systems, you might have just ~1 read per minute, but possibly
 	// millions of reads in the same time.
@@ -18,7 +15,7 @@ const (
 	delta = 0.5
 )
 
-func runInc(b *testing.B, c Counter) {
+func runInc(b *testing.B, c Counter, concurrency int) {
 	b.StopTimer()
 
 	var start, end sync.WaitGroup
@@ -46,7 +43,7 @@ func runInc(b *testing.B, c Counter) {
 	end.Wait()
 }
 
-func runAdd(b *testing.B, c Counter) {
+func runAdd(b *testing.B, c Counter, concurrency int) {
 	b.StopTimer()
 
 	var start, end sync.WaitGroup
@@ -74,42 +71,170 @@ func runAdd(b *testing.B, c Counter) {
 	end.Wait()
 }
 
-func BenchmarkMutexCounterInc(b *testing.B) {
-	runInc(b, &MutexCounter{})
+func BenchmarkMutexCounterInc1(b *testing.B) {
+	runInc(b, &MutexCounter{}, 1)
 }
 
-func BenchmarkMutexCounterAdd(b *testing.B) {
-	runAdd(b, &MutexCounter{})
+func BenchmarkMutexCounterAdd1(b *testing.B) {
+	runAdd(b, &MutexCounter{}, 1)
 }
 
-func BenchmarkRWMutexCounterInc(b *testing.B) {
-	runInc(b, &RWMutexCounter{})
+func BenchmarkRWMutexCounterInc1(b *testing.B) {
+	runInc(b, &RWMutexCounter{}, 1)
 }
 
-func BenchmarkRWMutexCounterAdd(b *testing.B) {
-	runAdd(b, &RWMutexCounter{})
+func BenchmarkRWMutexCounterAdd1(b *testing.B) {
+	runAdd(b, &RWMutexCounter{}, 1)
 }
 
-func BenchmarkAtomicIntCounterInc(b *testing.B) {
-	runInc(b, new(AtomicIntCounter))
+func BenchmarkAtomicIntCounterInc1(b *testing.B) {
+	runInc(b, new(AtomicIntCounter), 1)
 }
 
-func BenchmarkAtomicIntCounterAdd(b *testing.B) {
-	runAdd(b, new(AtomicIntCounter))
+func BenchmarkAtomicIntCounterAdd1(b *testing.B) {
+	runAdd(b, new(AtomicIntCounter), 1)
 }
 
-func BenchmarkAtomicSpinningCounterInc(b *testing.B) {
-	runInc(b, new(AtomicSpinningCounter))
+func BenchmarkNaiveCounterInc1(b *testing.B) {
+	runInc(b, new(NaiveCounter), 1)
 }
 
-func BenchmarkAtomicSpinningCounterAdd(b *testing.B) {
-	runAdd(b, new(AtomicSpinningCounter))
+func BenchmarkNaiveCounterAdd1(b *testing.B) {
+	runAdd(b, new(NaiveCounter), 1)
 }
 
-func BenchmarkChannelCounterInc(b *testing.B) {
-	runInc(b, NewChannelCounter())
+func BenchmarkNaiveIntCounterInc1(b *testing.B) {
+	runInc(b, new(NaiveIntCounter), 1)
 }
 
-func BenchmarkChannelCounterAdd(b *testing.B) {
-	runAdd(b, NewChannelCounter())
+func BenchmarkNaiveIntCounterAdd1(b *testing.B) {
+	runAdd(b, new(NaiveIntCounter), 1)
+}
+
+func BenchmarkAtomicSpinningCounterInc1(b *testing.B) {
+	runInc(b, new(AtomicSpinningCounter), 1)
+}
+
+func BenchmarkAtomicSpinningCounterAdd1(b *testing.B) {
+	runAdd(b, new(AtomicSpinningCounter), 1)
+}
+
+func BenchmarkChannelCounterInc1(b *testing.B) {
+	runInc(b, NewChannelCounter(), 1)
+}
+
+func BenchmarkChannelCounterAdd1(b *testing.B) {
+	runAdd(b, NewChannelCounter(), 1)
+}
+
+func BenchmarkMutexCounterInc10(b *testing.B) {
+	runInc(b, &MutexCounter{}, 10)
+}
+
+func BenchmarkMutexCounterAdd10(b *testing.B) {
+	runAdd(b, &MutexCounter{}, 10)
+}
+
+func BenchmarkRWMutexCounterInc10(b *testing.B) {
+	runInc(b, &RWMutexCounter{}, 10)
+}
+
+func BenchmarkRWMutexCounterAdd10(b *testing.B) {
+	runAdd(b, &RWMutexCounter{}, 10)
+}
+
+func BenchmarkAtomicIntCounterInc10(b *testing.B) {
+	runInc(b, new(AtomicIntCounter), 10)
+}
+
+func BenchmarkAtomicIntCounterAdd10(b *testing.B) {
+	runAdd(b, new(AtomicIntCounter), 10)
+}
+
+func BenchmarkNaiveCounterInc10(b *testing.B) {
+	runInc(b, new(NaiveCounter), 10)
+}
+
+func BenchmarkNaiveCounterAdd10(b *testing.B) {
+	runAdd(b, new(NaiveCounter), 10)
+}
+
+func BenchmarkNaiveIntCounterInc10(b *testing.B) {
+	runInc(b, new(NaiveIntCounter), 10)
+}
+
+func BenchmarkNaiveIntCounterAdd10(b *testing.B) {
+	runAdd(b, new(NaiveIntCounter), 10)
+}
+
+func BenchmarkAtomicSpinningCounterInc10(b *testing.B) {
+	runInc(b, new(AtomicSpinningCounter), 10)
+}
+
+func BenchmarkAtomicSpinningCounterAdd10(b *testing.B) {
+	runAdd(b, new(AtomicSpinningCounter), 10)
+}
+
+func BenchmarkChannelCounterInc10(b *testing.B) {
+	runInc(b, NewChannelCounter(), 10)
+}
+
+func BenchmarkChannelCounterAdd10(b *testing.B) {
+	runAdd(b, NewChannelCounter(), 10)
+}
+
+func BenchmarkMutexCounterInc100(b *testing.B) {
+	runInc(b, &MutexCounter{}, 100)
+}
+
+func BenchmarkMutexCounterAdd100(b *testing.B) {
+	runAdd(b, &MutexCounter{}, 100)
+}
+
+func BenchmarkRWMutexCounterInc100(b *testing.B) {
+	runInc(b, &RWMutexCounter{}, 100)
+}
+
+func BenchmarkRWMutexCounterAdd100(b *testing.B) {
+	runAdd(b, &RWMutexCounter{}, 100)
+}
+
+func BenchmarkAtomicIntCounterInc100(b *testing.B) {
+	runInc(b, new(AtomicIntCounter), 100)
+}
+
+func BenchmarkAtomicIntCounterAdd100(b *testing.B) {
+	runAdd(b, new(AtomicIntCounter), 100)
+}
+
+func BenchmarkNaiveCounterInc100(b *testing.B) {
+	runInc(b, new(NaiveCounter), 100)
+}
+
+func BenchmarkNaiveCounterAdd100(b *testing.B) {
+	runAdd(b, new(NaiveCounter), 100)
+}
+
+func BenchmarkNaiveIntCounterInc100(b *testing.B) {
+	runInc(b, new(NaiveIntCounter), 100)
+}
+
+func BenchmarkNaiveIntCounterAdd100(b *testing.B) {
+	runAdd(b, new(NaiveIntCounter), 100)
+}
+
+func BenchmarkAtomicSpinningCounterInc100(b *testing.B) {
+	runInc(b, new(AtomicSpinningCounter), 100)
+}
+
+func BenchmarkAtomicSpinningCounterAdd100(b *testing.B) {
+	runAdd(b, new(AtomicSpinningCounter), 100)
+}
+
+func BenchmarkChannelCounterInc100(b *testing.B) {
+	runInc(b, NewChannelCounter(), 100)
+}
+
+func BenchmarkChannelCounterAdd100(b *testing.B) {
+	runAdd(b, NewChannelCounter(), 100)
 }
