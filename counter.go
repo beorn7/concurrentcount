@@ -164,18 +164,11 @@ func (c *ChannelCounter) loop() {
 
 	var value float64
 	for {
-		// Outer select: First process all the waiting samples.
-		// This is not ideal as it might let Get block forever.
 		select {
 		case v := <-c.queue:
 			value += v
-		default:
-			select {
-			case v := <-c.queue:
-				value += v
-			case c.value <- value:
-				// Do nothing.
-			}
+		case c.value <- value:
+			// Do nothing.
 		}
 	}
 }
