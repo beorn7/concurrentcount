@@ -137,9 +137,9 @@ type ChannelCounter struct {
 	value chan float64
 }
 
-func NewChannelCounter() Counter {
+func NewChannelCounter(bufsize int) Counter {
 	c := &ChannelCounter{
-		make(chan float64, 1024),
+		make(chan float64, bufsize),
 		make(chan float64),
 	}
 	go c.loop()

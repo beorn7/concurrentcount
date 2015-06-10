@@ -119,12 +119,20 @@ func BenchmarkAtomicSpinningCounterAdd1(b *testing.B) {
 	runAdd(b, new(AtomicSpinningCounter), 1)
 }
 
-func BenchmarkChannelCounterInc1(b *testing.B) {
-	runInc(b, NewChannelCounter(), 1)
+func BenchmarkSyncChannelCounterInc1(b *testing.B) {
+	runInc(b, NewChannelCounter(0), 1)
 }
 
-func BenchmarkChannelCounterAdd1(b *testing.B) {
-	runAdd(b, NewChannelCounter(), 1)
+func BenchmarkSyncChannelCounterAdd1(b *testing.B) {
+	runAdd(b, NewChannelCounter(0), 1)
+}
+
+func BenchmarkBufferedChannelCounterInc1(b *testing.B) {
+	runInc(b, NewChannelCounter(1024), 1)
+}
+
+func BenchmarkBufferedChannelCounterAdd1(b *testing.B) {
+	runAdd(b, NewChannelCounter(1024), 1)
 }
 
 func BenchmarkMutexCounterInc10(b *testing.B) {
@@ -175,12 +183,20 @@ func BenchmarkAtomicSpinningCounterAdd10(b *testing.B) {
 	runAdd(b, new(AtomicSpinningCounter), 10)
 }
 
-func BenchmarkChannelCounterInc10(b *testing.B) {
-	runInc(b, NewChannelCounter(), 10)
+func BenchmarkSyncChannelCounterInc10(b *testing.B) {
+	runInc(b, NewChannelCounter(0), 10)
 }
 
-func BenchmarkChannelCounterAdd10(b *testing.B) {
-	runAdd(b, NewChannelCounter(), 10)
+func BenchmarkSyncChannelCounterAdd10(b *testing.B) {
+	runAdd(b, NewChannelCounter(0), 10)
+}
+
+func BenchmarkBufferedChannelCounterInc10(b *testing.B) {
+	runInc(b, NewChannelCounter(1024), 10)
+}
+
+func BenchmarkBufferedChannelCounterAdd10(b *testing.B) {
+	runAdd(b, NewChannelCounter(1024), 10)
 }
 
 func BenchmarkMutexCounterInc100(b *testing.B) {
@@ -231,10 +247,18 @@ func BenchmarkAtomicSpinningCounterAdd100(b *testing.B) {
 	runAdd(b, new(AtomicSpinningCounter), 100)
 }
 
-func BenchmarkChannelCounterInc100(b *testing.B) {
-	runInc(b, NewChannelCounter(), 100)
+func BenchmarkSyncChannelCounterInc100(b *testing.B) {
+	runInc(b, NewChannelCounter(0), 100)
 }
 
-func BenchmarkChannelCounterAdd100(b *testing.B) {
-	runAdd(b, NewChannelCounter(), 100)
+func BenchmarkSyncChannelCounterAdd100(b *testing.B) {
+	runAdd(b, NewChannelCounter(0), 100)
+}
+
+func BenchmarkBufferedChannelCounterInc100(b *testing.B) {
+	runInc(b, NewChannelCounter(1024), 100)
+}
+
+func BenchmarkBufferedChannelCounterAdd100(b *testing.B) {
+	runAdd(b, NewChannelCounter(1024), 100)
 }
